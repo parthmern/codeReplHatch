@@ -49,9 +49,10 @@ export class s3Service {
 
     async copyS3Folder(folderName: string, projectName: string) {
 
+        const defaultFolder = folderName + "DEFAULT";
         const listParams = {
             Bucket: this.bucketName,
-            Prefix: folderName + "/"
+            Prefix: defaultFolder + "/"
         };
 
         const listedObjects = await this.s3Client.listObjectsV2(listParams).promise();
@@ -70,7 +71,7 @@ export class s3Service {
                 // and file "folderName/file"
                 if (!object) return;
                 const copyFrom = `${this.bucketName}/${object}`;
-                const copyTo = object.replace(folderName, projectName);
+                const copyTo = object.replace(defaultFolder, projectName);
                 const copyParams = {
                     Bucket: this.bucketName,
                     CopySource: copyFrom,
@@ -79,6 +80,7 @@ export class s3Service {
                 try {
                     await this.s3Client.copyObject(copyParams).promise();
                     console.log("Copied from", copyFrom, " -> ", copyParams.Key);
+                    return copyParams.Key;
                 } catch (err) {
                     console.error("Error copying object -> copyS3Folder:", err);
                 }
