@@ -19,4 +19,5 @@ serve({
   const s3 = new s3Service();
   s3.getAllObject();
   s3.copyS3Folder("defaultTemplates", "parth");
+  s3.saveContentToS3("trial/", "name.txt", "content");
 })

@@ -31,13 +31,18 @@ export class s3Service {
             response.Contents?.forEach(item => {
                 if (item.Key) {
                     keys.push(item.Key);
-                    console.log("File:", item.Key);
+                    if (item.Key.endsWith("/")) {  // if object ends with "/" means that is folder ex. "folderName/"
+                        console.log("folder:", item.Key);
+                    } else {
+                        console.log("file: ", item.Key);
+                    }
+
                 }
             });
 
             return keys;
         } catch (error) {
-            console.log("ERROR: s3Service -> getAllObject", error);
+            console.log("ERROR: s3Service > getAllObject", error);
             return null;
         }
     }
@@ -51,7 +56,7 @@ export class s3Service {
 
         const listedObjects = await this.s3Client.listObjectsV2(listParams).promise();
 
-        if (!listedObjects.Contents || listedObjects.Contents.length === 0){
+        if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
             console.error(`listedObjects.Contents is empty means ${folderName} is empty`);
             return;
         }
@@ -60,14 +65,16 @@ export class s3Service {
 
         // first copy folder like "folderName/" and then copy files inside it "folderName/file1"
         await Promise.all(
-            allFilesInsideFolder.map(async (file) => {
-                if (!file) return;
-                const copyFrom = `${this.bucketName}/${file}`;
-                const copyTo = file.replace(folderName, projectName);
+            allFilesInsideFolder.map(async (object) => {
+                // object can be folder like "folderName/"
+                // and file "folderName/file"
+                if (!object) return;
+                const copyFrom = `${this.bucketName}/${object}`;
+                const copyTo = object.replace(folderName, projectName);
                 const copyParams = {
                     Bucket: this.bucketName,
-                    CopySource: copyFrom, 
-                    Key: copyTo, 
+                    CopySource: copyFrom,
+                    Key: copyTo,
                 };
                 try {
                     await this.s3Client.copyObject(copyParams).promise();
@@ -80,5 +87,19 @@ export class s3Service {
 
     }
 
+    async saveContentToS3(folderName: string, filePath: string, content: string) {
+        const params = {
+            Bucket: this.bucketName ?? "",
+            Key: `${folderName}${filePath}`,
+            Body: content
+        }
+        try {
+            const res = await this.s3Client.putObject(params).promise();
+            console.log(`Saved at ${folderName}${filePath} `, res);
+        }
+        catch (error) {
+            console.log("ERROR: s3Service > saveContentToS3", error);
+        }
+    }
 
 }
