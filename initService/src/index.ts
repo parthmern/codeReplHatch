@@ -17,5 +17,6 @@ serve({
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
   const s3 = new s3Service();
-  s3.getAllImages("parthmern-s3");
+  s3.getAllObject();
+  s3.copyS3Folder("defaultTemplates", "parth");
 })
