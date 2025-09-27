@@ -1,10 +1,14 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { s3Service } from './services/s3.service.js'
 
 const app = new Hono()
 
 app.get('/', (c) => {
-  return c.text('Hello Hono!')
+  return c.json({
+    "github": "@parthmern",
+    "portfolio": "parthmern.cloud"
+  }, 200)
 })
 
 serve({
@@ -12,4 +16,6 @@ serve({
   port: 3000
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
+  const s3 = new s3Service();
+  s3.getAllImages("parthmern-s3");
 })
