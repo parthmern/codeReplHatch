@@ -19,8 +19,10 @@ serve({
   port: 3000
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
-  // const s3 = new s3Service();
+  const s3 = new s3Service();
   // s3.getAllObject();
-  // s3.copyS3Folder("defaultTemplates", "parth");
+  //s3.copyS3Folder("defaultTemplates", "parth");
   // s3.saveContentToS3("trial/", "name.txt", "content");
+  //s3.getAllProjectFileNames("nodejsDEFAULT");
+
 })

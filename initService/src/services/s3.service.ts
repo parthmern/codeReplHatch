@@ -47,6 +47,45 @@ export class s3Service {
         }
     }
 
+    async getAllProjectFileNames(prefix: string = "") {
+        try {
+            const params: AWS.S3.ListObjectsV2Request = {
+                Bucket: this.bucketName,
+                Prefix: prefix
+            };
+
+
+            const response = await this.s3Client.listObjectsV2(params).promise();
+
+            const keys: Object[] = [];
+            response.Contents?.forEach(item => {
+                if (item.Key) {
+
+                    if (item.Key.endsWith("/")) {  // if object ends with "/" means that is folder ex. "folderName/"
+                        console.log("folder:", item.Key);
+                        keys.push({
+                            type: "folder",
+                            name: item.Key,
+                        });
+                    } else {
+                        console.log("file: ", item.Key);
+                        keys.push({
+                            type: "file",
+                            name: item.Key,
+                        });
+                    }
+
+                }
+            });
+            console.log(keys);
+
+            return keys;
+        } catch (error) {
+            console.log("ERROR: s3Service > getAllObject", error);
+            return null;
+        }
+    }
+
     async copyS3Folder(folderName: string, projectName: string) {
 
         const defaultFolder = folderName + "DEFAULT";
