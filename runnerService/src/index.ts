@@ -17,6 +17,10 @@ initIO(server);     // WS init config
 const io = getIO();
 registerSocketRoutes(io);
 
+app.get("/", (req, res) => {
+    return res.status(200).send(`Server listening on http://localhost:${PORT}`)
+})
+
 server.listen(PORT, async () => {
     console.log(`Server running on http://localhost:${PORT}`);
     // const s3 = new s3Service();
