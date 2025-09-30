@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userpod-deployment
+  labels:
+    app: userpod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userpod
+  template:
+    metadata:
+      labels:
+        app: userpod
+    spec:
+      volumes:
+        - name: workspace-vol
+          emptyDir: {}
+      containers:
+        - name: runner-code
+          image: pptl8685/runnerservice
+          ports:
+            - containerPort: 4000
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-vol
+      initContainers:
+        - name: aws-cli-to-copy-s3
+          image: amazon/aws-cli:2.22.30
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Starting S3 download..." &&
+              aws --version &&
+              aws --endpoint-url https://tor1.digitaloceanspaces.com s3 cp s3://parthmern-s3/fddf/ /workspace/  --recursive || true &&
+              echo "=== Resources copied from S3 ===" &&
+              aws --endpoint-url https://tor1.digitaloceanspaces.com s3 ls s3://parthmern-s3/fddf/ &&
+              echo "=== Files inside /workspace/ ===" &&
+              find /workspace -ls
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-vol
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: "xx"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "xx"
