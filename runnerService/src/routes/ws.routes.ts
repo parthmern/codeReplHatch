@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { FileService } from "../service/fs.service";
+import { PTYService } from "../service/pty.service";
 
 const fsClient = new FileService();
 
@@ -33,13 +34,22 @@ export const registerSocketRoutes = (io: Server) => {
 }
 
 const initRoutes = (socket: Socket, replId: string) => {
+
+    const ptyService = new PTYService(socket);
+
+    socket.on('terminal-input', (data: string) => {
+        //console.log("terminal-input -> ", data)
+        ptyService.writeTerminal(data);
+    });
+
+
     socket.on("fileSystem", (obj) => {
-        const {path} = obj;
+        const { path } = obj;
         fsClient.getAllDirectories(path);
     })
 
     socket.on("allFileAndFolders", (obj) => {
-        const {path} = obj;
+        const { path } = obj;
         fsClient.getAllFilesAndFolders(path);
     })
 }

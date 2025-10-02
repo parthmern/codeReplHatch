@@ -25,6 +25,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@lydell/node-pty": "^1.1.0",
     "aws-sdk": "^2.1692.0",
     "cors": "^2.8.5",
     "socket.io": "^4.8.1"
