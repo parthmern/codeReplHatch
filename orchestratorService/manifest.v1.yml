@@ -44,9 +44,9 @@ spec:
               name: workspace-vol
           env:
             - name: AWS_ACCESS_KEY_ID
-              value: "xx"
+              value: "DO801VRYECGBCYRYHVHB"
             - name: AWS_SECRET_ACCESS_KEY
-              value: "xx"
+              value: "n4GU7SDpkbhohecpaGUnNT+Y9NXNnWvkM+M0Yzh9O3A"
 
 ---
 apiVersion: v1
@@ -77,7 +77,7 @@ metadata:
 spec:
   ingressClassName: nginx # that we installed controller
   rules:
-    - host: ingress-nginx.parthmern.store
+    - host: userpod.ingress-nginx.parthmern.store
       http:
         paths:
           - path: /

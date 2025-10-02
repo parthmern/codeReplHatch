@@ -13,3 +13,5 @@
 - cmd and args ( command and arguments in pod ) = https://yuminlee2.medium.com/kubernetes-command-and-arguments-in-pod-c3f1be61ba1a
 
 - install nginx using helm = https://medium.com/@chandan.chanddu/installing-nginx-ingress-controller-in-eks-using-helm-41913011ef49
+
+- psudo terminals node pty and xterm = https://medium.com/@deysouvik700/efficient-and-scalable-usage-of-node-js-pty-with-socket-io-for-multiple-users-402851075c4a
