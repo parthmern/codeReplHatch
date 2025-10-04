@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import { error } from 'console';
 import "dotenv/config";
 
 export class s3Service {
