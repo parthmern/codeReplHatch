@@ -4,7 +4,7 @@ import { FitAddon } from "xterm-addon-fit";
 import "xterm/css/xterm.css";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4000"); // your backend
+const socket = io("userpod.ingress-nginx.parthmern.store"); // your backend
 
 const TerminalComponent: React.FC = () => {
   const terminalRef = useRef<HTMLDivElement>(null);
