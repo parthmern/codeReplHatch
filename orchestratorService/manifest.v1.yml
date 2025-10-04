@@ -26,13 +26,40 @@ spec:
           volumeMounts:
             - mountPath: /workspace
               name: workspace-vol
+        - name: s3-sidecar-sync-container
+          image: amazon/aws-cli:2.22.30
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "=== Starting S3 upload sync loop ==="
+              while true; do
+                # Only sync if /workspace has files
+                if [ "$(ls -A /workspace)" ]; then
+                  aws --endpoint-url https://tor1.digitaloceanspaces.com s3 sync /workspace/ s3://parthmern-s3/fddf/ --delete \
+                    --exact-timestamps \
+                    --exclude "*.swp" \
+                    --exclude "node_modules/*" || true
+                  echo "=== Uploaded changes at $(date) ==="
+                else
+                  echo "=== /workspace empty, skipping upload at $(date) ==="
+                fi
+                sleep 30
+              done
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: "xx"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "xx"
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-vol
       initContainers:
         - name: aws-cli-to-copy-s3
           image: amazon/aws-cli:2.22.30
           command: ["/bin/sh", "-c"]
           args:
             - |
-              echo "Starting S3 download..." &&
+              echo "=== Starting S3 download ===" &&
               aws --version &&
               aws --endpoint-url https://tor1.digitaloceanspaces.com s3 cp s3://parthmern-s3/fddf/ /workspace/  --recursive || true &&
               echo "=== Resources copied from S3 ===" &&
@@ -44,9 +71,9 @@ spec:
               name: workspace-vol
           env:
             - name: AWS_ACCESS_KEY_ID
-              value: "DO801VRYECGBCYRYHVHB"
+              value: "x"
             - name: AWS_SECRET_ACCESS_KEY
-              value: "n4GU7SDpkbhohecpaGUnNT+Y9NXNnWvkM+M0Yzh9O3A"
+              value: "x"
 
 ---
 apiVersion: v1
@@ -87,11 +114,21 @@ spec:
                 name: userpod-service
                 port:
                   number: 4000
+          - path: /app
+            pathType: Prefix
+            backend:
+              service:
+                name: userpod-service
+                port:
+                  number: 4001
 # ----------------- v1 debugging ---------------------------------------------------------------------
 # kubectl apply -f manifest.v1.yml
 # kubectl get pods - userpod-deployment-86f684fb6c-6p5xx   0/1     PodInitializing   0          5s
 # kubectl logs userpod-deployment-86f684fb6c-6p5xx -c aws-cli-to-copy-s3
 # kubectl describe pod userpod-deployment-86f684fb6c-6p5xx
+# -------------
 # kubectl delete deployment userpod-deployment
+# kubectl delete service userpod-service
+# kubectl delete ingress web-apps-ingress
 
 # kubectl get services
