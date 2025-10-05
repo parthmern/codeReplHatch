@@ -1,9 +1,12 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { s3Service } from './services/s3.service.js'
 import projectRouter from './routes/project.route.js'
 
 const app = new Hono()
+
+app.use(cors());
 
 app.get('/', (c) => {
   return c.json({

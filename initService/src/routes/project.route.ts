@@ -27,13 +27,13 @@ projectRouter.post('/init', async (c) => {
         // TODO: check in DB is project existed or not
 
         const s3 = new s3Service();
-        const res = s3.copyS3Folder(body.language, body.projectId);
+        const res = await s3.copyS3Folder(body.language, body.projectId);
 
         return c.json({ success: true, message: "Project initialized", data: res });
     }
     catch (error) {
-        console.log("ERROR projectRouter /init ", error)
-        return c.json({ success: false, error: JSON.parse(error as string) }, 400);
+        console.log("ERROR projectRouter /init ", error);
+        return c.json({ success: false, error }, 400);
     }
 })
 

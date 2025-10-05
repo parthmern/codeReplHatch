@@ -122,6 +122,7 @@ export class s3Service {
                     return copyParams.Key;
                 } catch (err) {
                     console.error("Error copying object -> copyS3Folder:", err);
+
                 }
             })
         );
