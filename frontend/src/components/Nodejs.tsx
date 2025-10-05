@@ -1,15 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Nodejs = () => {
+  const naviagte = useNavigate();
   return (
     <div className=" flex items-center px-7 gap-x-5 py-5 backdrop-blur-xl bg-neutral-900/60 border border-white/[0.08] hover:border-white/[0.12] p-7 transition-all duration-300 hover:shadow-xl ">
       <div className=" flex flex-col items-center justify-center pixelFont text-2xl">
         <p>NodeJs + ExpressJs</p>
       </div>
       <p className="ibmFont text-sm uppercase">
-        Connect to an isolated sandbox to securely make apis.
+        Connect to an isolated sandbox to securely run backend.
       </p>
-      <button className="group cursor-pointer relative inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white font-medium text-black transition-all duration-300 hover:w-32">
+      <button
+        onClick={() => naviagte("/repl/nodejs/123")}
+        className="group cursor-pointer relative inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white font-medium text-black transition-all duration-300 hover:w-32"
+      >
         <div className="inline-flex whitespace-nowrap opacity-0 transition-all duration-200 group-hover:-translate-x-3 group-hover:opacity-100">
           Start
         </div>
