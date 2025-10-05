@@ -43,14 +43,38 @@ const initRoutes = (socket: Socket, replId: string) => {
     });
 
 
-    socket.on("fileSystem", (obj) => {
+    socket.on("fileSystem", (obj, callback) => {
         const { path } = obj;
-        fsClient.getAllDirectories(path);
+        try {
+            const dirs = fsClient.getAllDirectories(path);
+            callback({ success: true, path, dirs });
+        } catch (err: unknown) {
+            callback({ success: false, error: err });
+        }
+    });
+
+
+    socket.on("allFileAndFolders", (obj, callback) => {
+        const { path } = obj;
+        try {
+            const dirs = fsClient.getAllFilesAndFolders(path);
+            callback({ success: true, path, dirs });
+        } catch (err: unknown) {
+            callback({ success: false, error: err });
+        }
     })
 
-    socket.on("allFileAndFolders", (obj) => {
-        const { path } = obj;
-        fsClient.getAllFilesAndFolders(path);
-    })
+    socket.on("fetchContent", async ({ path: filePath }: { path: string }, callback) => {
+        const fullPath = `/workspace/${filePath}`;
+        try {
+            const data = await fsClient.fetchFileContent(fullPath);
+            callback({ success: true, data });
+        } catch (err: unknown) {
+            callback({ success: false, error: err });
+        }
+    });
+
+
+
 }
 
