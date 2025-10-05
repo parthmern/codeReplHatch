@@ -1,7 +1,7 @@
 // import AWS from 'aws-sdk';
 // import "dotenv/config";
 
-// export class s3Service {
+export class s3Service {
 
 //     s3Client: AWS.S3;
 //     bucketName: string;
@@ -142,4 +142,4 @@
 //         }
 //     }
 
-// }
+}
