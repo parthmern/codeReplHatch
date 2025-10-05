@@ -36,6 +36,17 @@ export default function VideoBackground() {
             noise, and focus on what matters: building great software.
           </p>
           <button
+            onClick={() => {
+              const section = document.getElementById("main");
+              if (section) {
+                const top =
+                  section.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo({
+                  top,
+                  behavior: "smooth",
+                });
+              }
+            }}
             role="link"
             className="relative cursor-pointer pt-5 ibmFont uppercase text-[12px] after:absolute after:bottom-[-3px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-white after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
           >

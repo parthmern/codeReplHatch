@@ -10,7 +10,9 @@
 }
 
 :root {
-  background-color: oklch(20.5% 0 0);
+  /* background-color: oklch(20.5% 0 0); */
+  background-color: black;
+  color: white;
   font-family: "PP Neue Montreal", sans-serif;
 }
 
