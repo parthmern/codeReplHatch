@@ -35,7 +35,7 @@ spec:
               while true; do
                 # Only sync if /workspace has files
                 if [ "$(ls -A /workspace)" ]; then
-                  aws --endpoint-url https://tor1.digitaloceanspaces.com s3 sync /workspace/ s3://parthmern-s3/fddf/ --delete \
+                  aws --endpoint-url https://tor1.digitaloceanspaces.com s3 sync /workspace/ s3://parthmern-s3/12345/ --delete \
                     --exact-timestamps \
                     --exclude "*.swp" \
                     --exclude "node_modules/*" || true
@@ -47,9 +47,9 @@ spec:
               done
           env:
             - name: AWS_ACCESS_KEY_ID
-              value: "xx"
+              value: "DO801ALXLXXJRDWAFE9F"
             - name: AWS_SECRET_ACCESS_KEY
-              value: "xx"
+              value: "x"
           volumeMounts:
             - mountPath: /workspace
               name: workspace-vol
@@ -61,9 +61,9 @@ spec:
             - |
               echo "=== Starting S3 download ===" &&
               aws --version &&
-              aws --endpoint-url https://tor1.digitaloceanspaces.com s3 cp s3://parthmern-s3/fddf/ /workspace/  --recursive || true &&
+              aws --endpoint-url https://tor1.digitaloceanspaces.com s3 cp s3://parthmern-s3/12345/ /workspace/  --recursive || true &&
               echo "=== Resources copied from S3 ===" &&
-              aws --endpoint-url https://tor1.digitaloceanspaces.com s3 ls s3://parthmern-s3/fddf/ &&
+              aws --endpoint-url https://tor1.digitaloceanspaces.com s3 ls s3://parthmern-s3/12345/ &&
               echo "=== Files inside /workspace/ ===" &&
               find /workspace -ls
           volumeMounts:
@@ -71,7 +71,7 @@ spec:
               name: workspace-vol
           env:
             - name: AWS_ACCESS_KEY_ID
-              value: "x"
+              value: "DO801ALXLXXJRDWAFE9F"
             - name: AWS_SECRET_ACCESS_KEY
               value: "x"
 
