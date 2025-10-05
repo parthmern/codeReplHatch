@@ -41,6 +41,35 @@ export class FileService {
 
     }
 
+    fetchEverything = async (dir: string): Promise<string[]> => {
+        return new Promise((resolve, reject) => {
+            fs.readdir(dir, { withFileTypes: true }, async (err, files) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    try {
+                        const results: string[] = [];
+
+                        for (const file of files) {
+                            const fullPath = path.join(dir, file.name);
+                            if (file.isDirectory()) {
+                                const subFiles = await this.fetchEverything(fullPath);
+                                results.push(...subFiles);
+                            } else {
+                                results.push(fullPath);
+                            }
+                        }
+
+                        resolve(results);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            });
+        });
+    };
+
+
     fetchFileContent = (file: string): Promise<string> => {
         return new Promise((resolve, reject) => {
             fs.readFile(file, "utf8", (err, data) => {

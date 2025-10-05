@@ -74,6 +74,16 @@ const initRoutes = (socket: Socket, replId: string) => {
         }
     });
 
+    socket.on("fetchEverything", async ({ path }: { path: string }, callback) => {
+        const fullPath = path;
+        try {
+            const data = await fsClient.fetchEverything(fullPath);
+            callback({ success: true, data });
+        } catch (err: unknown) {
+            callback({ success: false, error: err });
+        }
+    })
+
 
 
 }

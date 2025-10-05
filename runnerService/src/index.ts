@@ -18,11 +18,11 @@ const io = getIO();
 registerSocketRoutes(io);
 
 app.get("/", (req, res) => {
-    return res.status(200).send(`Server listening on http://localhost:${PORT} V4`)
+    return res.status(200).send(`Server listening on http://localhost:${PORT} V5`)
 })
 
 server.listen(PORT, async () => {
-    console.log(`Server running on http://localhost:${PORT} V4`);
+    console.log(`Server running on http://localhost:${PORT} V5`);
     // const s3 = new s3Service();
     // const res = await s3.getAllObject();
     // console.log(res);
