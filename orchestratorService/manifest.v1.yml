@@ -49,7 +49,7 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               value: "DO801ALXLXXJRDWAFE9F"
             - name: AWS_SECRET_ACCESS_KEY
-              value: "x"
+              value: "vrhIUX6js5gUwjPC6CRauPCH9NnLJ0vPS6UEEINN7K8"
           volumeMounts:
             - mountPath: /workspace
               name: workspace-vol
@@ -73,7 +73,7 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               value: "DO801ALXLXXJRDWAFE9F"
             - name: AWS_SECRET_ACCESS_KEY
-              value: "x"
+              value: "vrhIUX6js5gUwjPC6CRauPCH9NnLJ0vPS6UEEINN7K8"
 
 ---
 apiVersion: v1

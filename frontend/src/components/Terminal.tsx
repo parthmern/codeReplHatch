@@ -3,6 +3,8 @@ import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import "xterm/css/xterm.css";
 import { io } from "socket.io-client";
+import { AdventureTime } from "xterm-theme";
+import xtermTheme from "xterm-theme";
 
 const socket = io("userpod.ingress-nginx.parthmern.store"); // your backend
 
@@ -12,10 +14,23 @@ const TerminalComponent: React.FC = () => {
 
   useEffect(() => {
     const term = new Terminal({
-      cols: 100,
-      rows: 30,
       cursorBlink: true,
-      scrollback: 1000,
+
+      theme: {
+        background: "#0d0208",
+        foreground: "#00ff41",
+        cursor: "#00ff41",
+        cursorAccent: "#00ff41",
+      },
+      fontFamily:
+        "monospace, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+      fontSize: 12,
+      letterSpacing: 0,
+      fontWeight: "100",
+      cursorStyle: "block",
+      cursorWidth: 2,
+      scrollOnUserInput: true,
+      cols: 5,
     });
 
     const fitAddon = new FitAddon();
@@ -43,7 +58,7 @@ const TerminalComponent: React.FC = () => {
     };
   }, []);
 
-  return <div ref={terminalRef} style={{ height: "100%" }} />;
+  return <div ref={terminalRef} style={{ height: "200px" }} />;
 };
 
 export default TerminalComponent;

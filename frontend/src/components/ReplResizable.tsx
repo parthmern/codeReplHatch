@@ -22,8 +22,8 @@ export function ReplResizable() {
 
       <ResizablePanel defaultSize={50}>
         <ResizablePanelGroup direction="vertical">
-          <ResizablePanel defaultSize={25}>
-            <div className="flex bg-white relative visible border-amber-300 border-2 z-50 h-full items-center justify-center p-6">
+          <ResizablePanel defaultSize={62}>
+            <div className="flex bg-white relative visible  border-2 z-50 h-full items-center justify-center p-6">
               <iframe src="http://userpod.ingress-nginx.parthmern.store/app" />
             </div>
           </ResizablePanel>
@@ -31,7 +31,7 @@ export function ReplResizable() {
           {/* Visible handle for vertical split */}
           <ResizableHandle withHandle />
 
-          <ResizablePanel defaultSize={75}>
+          <ResizablePanel defaultSize={38}>
             <TerminalComponent />
           </ResizablePanel>
         </ResizablePanelGroup>

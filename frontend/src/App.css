@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -10,6 +11,49 @@
   src: url("./assets/GomePixel-ARJd7.otf") format("truetype");
   font-weight: normal;
   font-style: normal;
+}
+
+.xterm .xterm-viewport {
+  /* Required so xterm scrolls */
+  background-color: transparent;
+  overflow-y: auto;
+  cursor: default;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  /* Firefox scrollbar */
+  scrollbar-color: #9ca3af #f3f4f6; /* thumb gray-400 on track gray-100 */
+  scrollbar-width: thin;
+}
+
+/* Chrome, Edge, Safari scrollbar */
+.xterm .xterm-viewport::-webkit-scrollbar {
+  width: 6px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-track {
+  background: #f3f4f6; /* gray-100 */
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+  background: #9ca3af; /* gray-400 */
+  border-radius: 4px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: #6b7280; /* gray-500 on hover */
+}
+
+/* Dark mode version */
+.dark .xterm .xterm-viewport::-webkit-scrollbar-track {
+  background: #374151; /* neutral-700 */
+}
+
+.dark .xterm .xterm-viewport::-webkit-scrollbar-thumb {
+  background: #6b7280; /* neutral-500 */
 }
 
 :root {
