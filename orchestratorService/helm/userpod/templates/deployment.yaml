@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Values.name }}-deployment"
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      volumes:
+        - name: workspace-vol
+          emptyDir: {}
+      containers:
+        - name: runner-code
+          image: {{ .Values.image }}
+          ports:
+            - containerPort: 4000
+            - containerPort: 4001
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-vol
+        - name: s3-sidecar-sync-container
+          image: amazon/aws-cli:2.22.30
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "=== Starting S3 upload sync loop ==="
+              while true; do
+                if [ "$(ls -A /workspace)" ]; then
+                  aws --endpoint-url {{ .Values.s3.endpoint }} s3 sync /workspace/ s3://{{ .Values.s3.bucket }}/{{ .Values.s3.folder }}/ --delete \
+                    --exact-timestamps \
+                    --exclude "*.swp" \
+                    --exclude "node_modules/*" || true
+                  echo "=== Uploaded changes at $(date) ==="
+                else
+                  echo "=== /workspace empty, skipping upload at $(date) ==="
+                fi
+                sleep 30
+              done
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.s3.accessKey | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.s3.secretKey | quote }}
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-vol
+      initContainers:
+        - name: aws-cli-to-copy-s3
+          image: amazon/aws-cli:2.22.30
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "=== Starting S3 download ===" &&
+              aws --version &&
+              aws --endpoint-url {{ .Values.s3.endpoint }} s3 cp s3://{{ .Values.s3.bucket }}/{{ .Values.s3.folder }}/ /workspace/ --recursive || true &&
+              echo "=== Resources copied from S3 ===" &&
+              aws --endpoint-url {{ .Values.s3.endpoint }} s3 ls s3://{{ .Values.s3.bucket }}/{{ .Values.s3.folder }}/ &&
+              echo "=== Files inside /workspace/ ===" &&
+              find /workspace -ls
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-vol
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.s3.accessKey | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.s3.secretKey | quote }}

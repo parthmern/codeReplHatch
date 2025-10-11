@@ -1,0 +1,10 @@
+name: userpod
+image: pptl8685/runnerservice:latest
+replicas: 1
+
+s3:
+  endpoint: https://tor1.digitaloceanspaces.com
+  bucket: parthmern-s3
+  folder: 12345
+  accessKey: DO801ALXLXXJRDWAFE9F
+  secretKey: vrhIUX6js5gUwjPC6CRauPCH9NnLJ0vPS6UEEINN7K8

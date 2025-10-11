@@ -96,7 +96,6 @@ export const Repl = () => {
   }, [selectedPath]);
 
 
-
   return (
     <div className="h-screen w-screen">
       {isReady ? (
