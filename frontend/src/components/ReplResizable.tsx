@@ -4,16 +4,23 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import TerminalComponent from "./Terminal";
+import TreeViewBasic from "./Tree";
+import { useState } from "react";
 
-export function ReplResizable() {
+export function ReplResizable({ allFilesAndFolders }: any) {
+  const [allFiles, setAllFiles] = useState();
+  console.log("ReplResizable", allFilesAndFolders);
   return (
     <ResizablePanelGroup
       direction="horizontal"
       className="h-full w-full border md:min-w-[450px]"
     >
       <ResizablePanel defaultSize={50}>
-        <div className="flex h-[200px] items-center justify-center p-6">
-          <span className="font-semibold">One</span>
+        <div className="flex flex-col justify-self-start ">
+          <div className="uppercase ml-4 py-2 ibmFont items-center align-middle justify-center">
+            Project Name
+          </div>
+          <TreeViewBasic allFilesAndFolders={allFilesAndFolders} />
         </div>
       </ResizablePanel>
 

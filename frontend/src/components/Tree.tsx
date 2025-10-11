@@ -9,7 +9,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type TreeNode = {
   id: string;
@@ -17,18 +17,18 @@ type TreeNode = {
   children?: TreeNode[];
 };
 
-function buildTree(items: { type: string; name: string }[]): TreeNode {
+function buildTree(paths: string[]): TreeNode {
   const root: TreeNode = { id: "ROOT", name: "", children: [] };
 
-  for (const item of items) {
-    const parts = item.name.split("/").filter(Boolean); // split into path segments
+  for (const fullPath of paths) {
+    const parts = fullPath.split("/").filter(Boolean); // split path into segments
     let current = root;
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      const isFile = i === parts.length - 1 && item.type === "file";
+      const isFile = i === parts.length - 1; // last item is file
 
-      // check if node already exists
+      // look for an existing child with same name
       let node = current.children?.find((child) => child.name === part);
 
       if (!node) {
@@ -55,21 +55,12 @@ interface Node {
   children?: Node[] | undefined;
 }
 
-const TreeViewBasic = () => {
-  const res = [
-    { type: "folder", name: "b/" },
-    { type: "file", name: "b/package.json" },
-    { type: "file", name: "b/server.js" },
-    { type: "folder", name: "fddf/" },
-    { type: "file", name: "fddf/package.json" },
-    { type: "file", name: "fddf/server.js" },
-    { type: "folder", name: "fddf/trialsub/" },
-    { type: "file", name: "fddf/trialsub/docs.md" },
-    { type: "folder", name: "nodejsDEFAULT/" },
-    { type: "file", name: "nodejsDEFAULT/package.json" },
-    { type: "file", name: "nodejsDEFAULT/server.js" },
-  ];
-  const [treeData, setTreeData] = useState<Node>(buildTree(res));
+const TreeViewBasic = ({ allFilesAndFolders }: any) => {
+
+  const [treeData, setTreeData] = useState<Node>(buildTree(allFilesAndFolders));
+  useEffect(() => {
+    setTreeData(buildTree(allFilesAndFolders));
+  }, [allFilesAndFolders]);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedPath, setSelectedPath] = useState<string>("");
@@ -161,21 +152,20 @@ const TreeViewBasic = () => {
   };
 
   const deleteNode = (nodeId: string) => {
-    const deleteFromNode = (node: Node): Node => {
-      if (node.children) {
-        return {
-          ...node,
-          children: node.children
-            .filter((child) => child.id !== nodeId)
-            .map((child) => deleteFromNode(child)),
-        };
-      }
-      return node;
-    };
-
-    setTreeData((prev) => deleteFromNode(prev));
-    setSelectedNodeId(null);
-    setSelectedPath("");
+    // const deleteFromNode = (node: Node): Node => {
+    //   if (node.children) {
+    //     return {
+    //       ...node,
+    //       children: node.children
+    //         .filter((child) => child.id !== nodeId)
+    //         .map((child) => deleteFromNode(child)),
+    //     };
+    //   }
+    //   return node;
+    // };
+    // setTreeData((prev) => deleteFromNode(prev));
+    // setSelectedNodeId(null);
+    // setSelectedPath("");
   };
 
   const getNodePath = (
@@ -220,13 +210,13 @@ const TreeViewBasic = () => {
         {node.children ? (
           <TreeView.Branch>
             <TreeView.BranchControl
-              className="group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 data-[state=open]:text-slate-900 dark:data-[state=open]:text-slate-100"
+              className="group flex items-center gap-2 rounded-lg px-3 py-2 text-[12px] font-light transition-all duration-200 "
               onClick={() => handleNodeClick(node.id)}
             >
-              <TreeView.BranchIndicator className="flex h-4 w-4 shrink-0 items-center justify-center">
+              {/* <TreeView.BranchIndicator className="flex h-4 w-4 shrink-0 items-center justify-center">
                 <ChevronRight className="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 group-data-[state=open]:rotate-90 group-data-[state=open]:text-slate-600" />
-              </TreeView.BranchIndicator>
-              <TreeView.BranchText className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300 group-data-[state=open]:text-slate-900 dark:group-data-[state=open]:text-slate-100">
+              </TreeView.BranchIndicator> */}
+              <TreeView.BranchText className="flex items-center gap-2.5  group-data-[state=open]:text-white dark:group-data-[state=open]:text-slate-100">
                 <FolderClosed className="h-4 w-4 text-blue-500 group-data-[state=open]:hidden" />
                 <FolderOpen className="hidden h-4 w-4 text-blue-600 group-data-[state=open]:block" />
                 <span className="font-medium">{node.name}</span>
@@ -242,7 +232,7 @@ const TreeViewBasic = () => {
                 <Trash2 className="h-3 w-3 text-red-500" />
               </button>
             </TreeView.BranchControl>
-            <TreeView.BranchContent className="ml-6 mt-1 space-y-1 border-l border-slate-200 pl-4 dark:border-slate-700/60">
+            <TreeView.BranchContent className="ml-4 mt-1 space-y-1 border-l-[0.1px] border-white/30  dark:border-slate-700/60">
               <TreeView.BranchIndentGuide />
               {node.children.map((child, index) => (
                 <TreeNode
@@ -255,14 +245,12 @@ const TreeViewBasic = () => {
           </TreeView.Branch>
         ) : (
           <TreeView.Item
-            className="group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 data-[selected]:bg-blue-50 dark:data-[selected]:bg-blue-900/30 data-[selected]:text-blue-700 dark:data-[selected]:text-blue-300 data-[selected]:shadow-sm data-[selected]:ring-1 data-[selected]:ring-blue-200 dark:data-[selected]:ring-blue-800/30"
+            className="group flex w-full items-center gap-2  px-3 py-2 text-sm font-extralight transition-all duration-200  dark:hover:bg-slate-800/50 data-[selected]:bg-blue-900/30
+             dark:data-[selected]:bg-blue-900/30 data-[selected]:text-blue-700 dark:data-[selected]:text-blue-300 data-[selected]:shadow-sm data-[selected]:ring-1 data-[selected]:ring-blue-200 dark:data-[selected]:ring-blue-800/30"
             onClick={() => handleNodeClick(node.id)}
           >
-            <div className="flex h-4 w-4 shrink-0 items-center justify-center">
-              <div className="h-1.5 w-1.5 rounded-full bg-slate-300 dark:bg-slate-600 group-data-[selected]:bg-blue-500" />
-            </div>
-            <TreeView.ItemText className="flex items-center gap-2.5 text-slate-600 dark:text-slate-400 group-data-[selected]:text-blue-700 dark:group-data-[selected]:text-blue-300">
-              <File className="h-4 w-4 text-slate-400 group-data-[selected]:text-blue-500" />
+            <TreeView.ItemText className="flex items-center gap-2.5  group-data-[selected]:text-white ">
+              <File className="h-4 w-4 group-data-[selected]:text-white" />
               <span>{node.name}</span>
             </TreeView.ItemText>
             <button
@@ -282,9 +270,9 @@ const TreeViewBasic = () => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-[200px] mx-auto">
       <TreeView.Root collection={collection} className="w-full">
-        <div className="flex items-center justify-between mb-4">
+        {/* <div className="flex items-center justify-between mb-4">
           <TreeView.Label className="text-base font-semibold text-slate-900 dark:text-slate-100">
             Project Files
           </TreeView.Label>
@@ -306,14 +294,14 @@ const TreeViewBasic = () => {
               File
             </button>
           </div>
-        </div>
-        <TreeView.Tree className="space-y-1 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+        </div> */}
+        <TreeView.Tree className="space-y-1 rounded-xl  text-white   dark:border-slate-700 dark:bg-slate-900">
           {collection.rootNode.children?.map((node, index) => (
             <TreeNode key={node.id} node={node} indexPath={[index]} />
           ))}
         </TreeView.Tree>
 
-        {selectedPath && (
+        {/* {selectedPath && (
           <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
             <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
               Selected Path:
@@ -322,14 +310,14 @@ const TreeViewBasic = () => {
               {selectedPath}
             </div>
           </div>
-        )}
+        )} */}
       </TreeView.Root>
 
       {showLocationDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-96 max-w-[90vw] shadow-xl">
+          <div className=" dark:bg-slate-800 rounded-lg p-6 w-96 max-w-[90vw] shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-semibol ">
                 Add {addType === "folder" ? "Folder" : "File"}
               </h3>
               <button
@@ -341,7 +329,7 @@ const TreeViewBasic = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium   mb-2">
                 {addType === "folder" ? "Folder" : "File"} name:
               </label>
               <input
@@ -351,19 +339,19 @@ const TreeViewBasic = () => {
                 placeholder={
                   addType === "folder" ? "Enter folder name" : "Enter file name"
                 }
-                className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
+                className="w-full p-2 border border-slate-300   placeholder-slate-400 dark:placeholder-slate-500"
                 autoFocus
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-mediummb-2">
                 Select location:
               </label>
               <select
                 value={selectedParentId}
                 onChange={(e) => setSelectedParentId(e.target.value)}
-                className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                className="w-full p-2 border border-slate-300  rounded-md  dark:bg-slate-700 text-white dark:text-slate-100"
               >
                 {getAllFolders(treeData).map((folder) => (
                   <option key={folder.id} value={folder.id}>
@@ -376,7 +364,7 @@ const TreeViewBasic = () => {
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowLocationDialog(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"
+                className="px-4 py-2 text-sm font-medium   hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors"
               >
                 Cancel
               </button>

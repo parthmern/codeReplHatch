@@ -12,6 +12,8 @@ export const Repl = () => {
   const [fileSystemData, setFileSystemData] = useState([]);
   const [allFilesAndFolders, setAllFilesAndFolders] = useState([]);
 
+  console.log("allfiles", fileSystemData);
+
   useEffect(() => {
     let socket: Socket; // will hold the socket connection
 
@@ -44,7 +46,9 @@ export const Repl = () => {
           setIsReady(false);
 
           socket.emit("fetchEverything", { path: "/workspace" }, (res: any) => {
+            console.log("fetchEverything", res);
             console.log(res);
+            setAllFilesAndFolders(res?.data);
           });
 
           socket.emit(
@@ -64,7 +68,7 @@ export const Repl = () => {
       }
     }
 
-    //intializingProject();
+    intializingProject();
 
     // Cleanup on unmount
     return () => {
@@ -84,8 +88,8 @@ export const Repl = () => {
           <NodejsTerminalLoader />
         </div>
       ) : (
-        <div className="p-5 h-screen">
-          <ReplResizable />
+        <div className="p-2 h-screen">
+          <ReplResizable allFilesAndFolders={allFilesAndFolders} />
         </div>
       )}
     </div>
