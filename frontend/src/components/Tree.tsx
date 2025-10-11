@@ -55,15 +55,13 @@ interface Node {
   children?: Node[] | undefined;
 }
 
-const TreeViewBasic = ({ allFilesAndFolders }: any) => {
-
+const TreeViewBasic = ({ allFilesAndFolders, setSelectedPath }: any) => {
   const [treeData, setTreeData] = useState<Node>(buildTree(allFilesAndFolders));
   useEffect(() => {
     setTreeData(buildTree(allFilesAndFolders));
   }, [allFilesAndFolders]);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [selectedPath, setSelectedPath] = useState<string>("");
   const [showLocationDialog, setShowLocationDialog] = useState(false);
   const [addType, setAddType] = useState<"file" | "folder">("file");
   const [selectedParentId, setSelectedParentId] = useState<string>("ROOT");
@@ -270,7 +268,7 @@ const TreeViewBasic = ({ allFilesAndFolders }: any) => {
   };
 
   return (
-    <div className="w-full max-w-[200px] mx-auto">
+    <div className="w-[200px] mx-auto">
       <TreeView.Root collection={collection} className="w-full">
         {/* <div className="flex items-center justify-between mb-4">
           <TreeView.Label className="text-base font-semibold text-slate-900 dark:text-slate-100">

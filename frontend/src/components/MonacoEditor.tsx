@@ -1,22 +1,24 @@
-import React, { useState } from "react";
 import Editor from "@monaco-editor/react";
 
-function MonacoEditor() {
-  const [code, setCode] = useState("// Write your code here");
-
-  function handleEditorChange(value: React.SetStateAction<string>, event: any) {
-    setCode(value);
+function MonacoEditor({ code, setCode }: any) {
+  function handleEditorChange(value: string | undefined) {
+    setCode(value || ""); // handle undefined safely
   }
 
   return (
     <Editor
+      height="100%" // optional, ensures full height usage
       defaultLanguage="javascript"
-      defaultValue={code}
+      value={code}
       onChange={handleEditorChange}
-      theme="vs-dark" // or "vs-light"
+      theme="vs-dark"
       options={{
-        minimap: { enabled: false }, // Disable the minimap
-        fontSize: 16,
+        minimap: { enabled: false },
+        fontSize: 12,
+        automaticLayout: true, // auto resize
+        tabSize: 2,
+        formatOnType: true,
+        formatOnPaste: true,
       }}
     />
   );
