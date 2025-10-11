@@ -5,8 +5,11 @@ import {
 } from "@/components/ui/resizable";
 import TerminalComponent from "./Terminal";
 import TreeViewBasic from "./Tree";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MonacoEditor from "./MonacoEditor";
+import PulseDot from "react-pulse-dot";
+import "react-pulse-dot/dist/index.css";
+import axios from "axios";
 
 export function ReplResizable({
   allFilesAndFolders,
@@ -14,9 +17,28 @@ export function ReplResizable({
   setSelectedPath,
   code,
   setCode,
+  socketRef,
 }: any) {
-  const [allFiles, setAllFiles] = useState();
-  console.log("ReplResizable", allFilesAndFolders);
+  const [src, setSrc] = useState(
+    "http://userpod.ingress-nginx.parthmern.store/app"
+  );
+
+  const [ok, setOk] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://userpod.ingress-nginx.parthmern.store/app")
+      .then((res) => setOk(res.status === 200))
+      .catch(() => setOk(false));
+  }, [src]);
+
+  const refreshIframe = () => {
+    setSrc("http://userpod.ingress-nginx.parthmern.store/");
+    setTimeout(() => {
+      setSrc("http://userpod.ingress-nginx.parthmern.store/app");
+    }, 0);
+  };
+
   return (
     <ResizablePanelGroup
       direction="horizontal"
@@ -36,7 +58,12 @@ export function ReplResizable({
           <div className="ibmFont text-amber-200 text-sm py-2 uppercase">
             {selectedPath ? "- " + selectedPath : "- workspace"}
           </div>
-          <MonacoEditor code={code} setCode={setCode} />
+          <MonacoEditor
+            code={code}
+            setCode={setCode}
+            socketRef={socketRef}
+            selectedPath={selectedPath}
+          />
         </div>
       </ResizablePanel>
 
@@ -46,8 +73,30 @@ export function ReplResizable({
       <ResizablePanel defaultSize={30}>
         <ResizablePanelGroup direction="vertical">
           <ResizablePanel defaultSize={62}>
+            <div className="flex px-2 justify-between h-[36px] py-2">
+              <div className="flex ">
+                <PulseDot
+                  className="mt-[-5px]"
+                  color={ok ? "success" : "danger"}
+                />
+                <p
+                  onClick={() => window.open(src, "_blank")}
+                  className="cursor-pointer hover:text-green-400"
+                >
+                  Web
+                </p>
+              </div>
+              <div className="flex gap-x-2">
+                <button
+                  onClick={refreshIframe}
+                  className="cursor-pointer rounded-[8px] bg-neutral-200 px-3  text-sm text-neutral-950 transition-colors hover:bg-neutral-100 active:bg-neutral-50"
+                >
+                  Refresh
+                </button>
+              </div>
+            </div>
             <div className="flex bg-white relative visible  border-2 z-50 h-full items-center justify-center p-6">
-              <iframe src="http://userpod.ingress-nginx.parthmern.store/app" />
+              <iframe src={src} />
             </div>
           </ResizablePanel>
 

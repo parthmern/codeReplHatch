@@ -42,32 +42,42 @@ export class FileService {
     }
 
     fetchEverything = async (dir: string): Promise<string[]> => {
+        const ignoreContentFolders = ["node_modules"]; // folders whose content we ignore
+
         return new Promise((resolve, reject) => {
             fs.readdir(dir, { withFileTypes: true }, async (err, files) => {
                 if (err) {
                     reject(err);
-                } else {
-                    try {
-                        const results: string[] = [];
+                    return;
+                }
 
-                        for (const file of files) {
-                            const fullPath = path.join(dir, file.name);
-                            if (file.isDirectory()) {
-                                const subFiles = await this.fetchEverything(fullPath);
-                                results.push(...subFiles);
-                            } else {
+                try {
+                    const results: string[] = [];
+
+                    for (const file of files) {
+                        const fullPath = path.join(dir, file.name);
+
+                        if (file.isDirectory()) {
+                            if (ignoreContentFolders.includes(file.name)) {
                                 results.push(fullPath);
+                                continue;
                             }
-                        }
 
-                        resolve(results);
-                    } catch (e) {
-                        reject(e);
+                            const subFiles = await this.fetchEverything(fullPath);
+                            results.push(...subFiles);
+                        } else {
+                            results.push(fullPath);
+                        }
                     }
+
+                    resolve(results);
+                } catch (e) {
+                    reject(e);
                 }
             });
         });
     };
+
 
 
     fetchFileContent = (file: string): Promise<string> => {
@@ -80,6 +90,16 @@ export class FileService {
                 }
             });
         })
+    }
+
+    writeInFile = (file: string, data: string): Promise<void> => {
+        console.log("writing in file===>", file, data.slice(0, 20))
+        return new Promise((resolve, reject) => {
+            fs.writeFile(file, data, 'utf8', (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
     }
 
 }

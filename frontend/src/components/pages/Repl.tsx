@@ -95,6 +95,8 @@ export const Repl = () => {
     }
   }, [selectedPath]);
 
+
+
   return (
     <div className="h-screen w-screen">
       {isReady ? (
@@ -112,6 +114,7 @@ export const Repl = () => {
             setSelectedPath={setSelectedPath}
             setCode={setCode}
             code={code}
+            socketRef={socketRef}
           />
         </div>
       )}

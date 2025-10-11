@@ -1,8 +1,16 @@
 import Editor from "@monaco-editor/react";
 
-function MonacoEditor({ code, setCode }: any) {
+function MonacoEditor({ code, setCode, selectedPath, socketRef }: any) {
   function handleEditorChange(value: string | undefined) {
+    const cleanPath = selectedPath.slice(10);
     setCode(value || ""); // handle undefined safely
+    socketRef.current.emit(
+      "writeInFile",
+      { path: cleanPath, data: value },
+      (res: any) => {
+        console.log("writeInFile res", res);
+      }
+    );
   }
 
   return (

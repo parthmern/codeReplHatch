@@ -20,7 +20,7 @@ export class PTYService {
             cols: 100,
             rows: 30,
             name: 'xterm-256color',
-            cwd: process.cwd(),
+            cwd: "/workspace",
             env: process.env as Record<string, string>,
         });
 

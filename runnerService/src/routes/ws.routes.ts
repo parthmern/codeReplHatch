@@ -78,13 +78,24 @@ const initRoutes = (socket: Socket, replId: string) => {
         const fullPath = path;
         try {
             const data = await fsClient.fetchEverything(fullPath);
+            console.log("fetchEverything", data);
             callback({ success: true, data });
         } catch (err: unknown) {
             callback({ success: false, error: err });
         }
     })
 
-
+    socket.on("writeInFile", async ({ path, data }: { path: string, data: string }, callback) => {
+        const fullPath = `/workspace/${path}`;
+        try {
+            await fsClient.writeInFile(fullPath, data);
+            console.log("writeInFile done");
+            callback({ success: true, fullPath: fullPath })
+        }
+        catch (err: unknown) {
+            callback({ success: false, error: err });
+        }
+    })
 
 }
 
