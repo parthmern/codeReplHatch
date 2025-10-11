@@ -19,3 +19,5 @@
 - s3 sync best guide = https://awsfundamentals.com/blog/aws-s3-sync
 
 - sidecar / init containers = https://praneethreddybilakanti.medium.com/sidecar-containers-in-kubernetes-0e7829c96446
+
+- k8s client node = https://medium.com/@jadhav.swatissj99/understanding-how-kubectl-get-pods-works-a-behind-the-scenes-look-at-kubernetes-api-interaction-58882c4016b0

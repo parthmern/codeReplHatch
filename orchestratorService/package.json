@@ -1,0 +1,17 @@
+{
+  "name": "orchestratorservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kubernetes/client-node": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
