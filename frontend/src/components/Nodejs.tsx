@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export const Nodejs = () => {
@@ -12,7 +11,7 @@ export const Nodejs = () => {
         Connect to an isolated sandbox to securely run backend.
       </p>
       <button
-        onClick={() => naviagte("/repl/nodejs/123")}
+        onClick={() => naviagte("/repl/nodejs/testb")}
         className="group cursor-pointer relative inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white font-medium text-black transition-all duration-300 hover:w-32"
       >
         <div className="inline-flex whitespace-nowrap opacity-0 transition-all duration-200 group-hover:-translate-x-3 group-hover:opacity-100">

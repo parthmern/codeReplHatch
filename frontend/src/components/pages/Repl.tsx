@@ -8,7 +8,8 @@ import { ReplResizable } from "../ReplResizable";
 
 export const Repl = () => {
   const { id, lang } = useParams();
-  const [isReady, setIsReady] = useState(false);
+  const SOCKET_URL = `http://${id}.ingress-nginx.parthmern.store`;
+  const [isReady, setIsReady] = useState(true);
   const [fileSystemData, setFileSystemData] = useState([]);
   const [allFilesAndFolders, setAllFilesAndFolders] = useState([]);
   const [selectedPath, setSelectedPath] = useState<string>("");
@@ -20,15 +21,15 @@ export const Repl = () => {
   useEffect(() => {
     async function intializingProject() {
       try {
-        // const res = await axios.post("http://localhost:3000/project/init", {
-        //   language: lang,
-        //   projectId: id,
-        // });
+        const res = await axios.post("http://localhost:3000/project/init", {
+          language: lang,
+          projectId: id,
+        });
 
-        // console.log("Project init success:", res.data);
+        console.log("Project init success:", res.data);
 
         // Only connect socket after API succeeds
-        const socket = io("http://userpod.ingress-nginx.parthmern.store", {
+        const socket = io(SOCKET_URL, {
           transports: ["websocket"], // ensures websocket transport
         });
         socketRef.current = socket;
@@ -64,9 +65,12 @@ export const Repl = () => {
           socket.emit("fetchContent", { path: "server.js" }, (res: any) => {
             console.log(res);
           });
+
+          setIsReady(false);
         });
       } catch (error) {
         console.log("Project init error =>", error);
+        socketRef.current?.disconnect()
       }
     }
 
@@ -94,7 +98,6 @@ export const Repl = () => {
       );
     }
   }, [selectedPath]);
-
 
   return (
     <div className="h-screen w-screen">

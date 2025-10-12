@@ -5,11 +5,12 @@ import {
 } from "@/components/ui/resizable";
 import TerminalComponent from "./Terminal";
 import TreeViewBasic from "./Tree";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MonacoEditor from "./MonacoEditor";
 import PulseDot from "react-pulse-dot";
 import "react-pulse-dot/dist/index.css";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export function ReplResizable({
   allFilesAndFolders,
@@ -19,15 +20,16 @@ export function ReplResizable({
   setCode,
   socketRef,
 }: any) {
+  const {id} = useParams();
   const [src, setSrc] = useState(
-    "http://userpod.ingress-nginx.parthmern.store/app"
+    `http://${id}.ingress-nginx.parthmern.store/app`
   );
 
   const [ok, setOk] = useState(false);
 
   useEffect(() => {
     axios
-      .get("http://userpod.ingress-nginx.parthmern.store/app")
+      .get(`http://${id}.ingress-nginx.parthmern.store/app`)
       .then((res) => setOk(res.status === 200))
       .catch(() => setOk(false));
   }, [src]);
@@ -35,7 +37,7 @@ export function ReplResizable({
   const refreshIframe = () => {
     setSrc("http://userpod.ingress-nginx.parthmern.store/");
     setTimeout(() => {
-      setSrc("http://userpod.ingress-nginx.parthmern.store/app");
+      setSrc(`http://${id}.ingress-nginx.parthmern.store/app`);
     }, 0);
   };
 

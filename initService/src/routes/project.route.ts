@@ -1,9 +1,12 @@
 import { Hono } from "hono";
-import * as z from 'zod'
+import * as z from 'zod';
+import axios from "axios";
 import { s3Service } from "../services/s3.service.js";
 const projectRouter = new Hono();
 
 const LANGUAGES = ["nodejs", "reactjs"];
+
+const ORCHESTRATOR_SERVICE = "http://localhost:3005/"
 
 const initSchema = z.object({
     projectId: z.string().refine(
@@ -28,8 +31,12 @@ projectRouter.post('/init', async (c) => {
 
         const s3 = new s3Service();
         const res = await s3.copyS3Folder(body.language, body.projectId);
+        console.log("s3 copied done");
 
-        return c.json({ success: true, message: "Project initialized", data: res });
+        const pod = await axios.post(ORCHESTRATOR_SERVICE + "deploy-userpod/" + body.projectId);
+        console.log(pod);
+
+        return c.json({ success: true, message: "Project initialized", data: res, podRes: pod.data });
     }
     catch (error) {
         console.log("ERROR projectRouter /init ", error);

@@ -3,16 +3,18 @@ import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import "xterm/css/xterm.css";
 import { io } from "socket.io-client";
-import { AdventureTime } from "xterm-theme";
-import xtermTheme from "xterm-theme";
+import { useParams } from "react-router-dom";
 
-const socket = io("userpod.ingress-nginx.parthmern.store"); // your backend
 
 const TerminalComponent: React.FC = () => {
+  const {id} = useParams();
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<Terminal>();
 
   useEffect(() => {
+
+    const socket = io(id+".ingress-nginx.parthmern.store"); 
+
     const term = new Terminal({
       cursorBlink: true,
 
